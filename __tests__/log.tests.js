@@ -103,7 +103,6 @@ describe('recipe-lab log routes', () => {
     const response = await request(app)
       .delete(`/api/v1/logs/${log.id}`);
   
-    console.log(`/api/v1/logs/${log.id}`);
     expect(response.body).toEqual(log);
   });
   
