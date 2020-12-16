@@ -3,6 +3,7 @@ const pool = require('../lib/utils/pool');
 const request = require('supertest');
 const app = require('../lib/app');
 const Recipe = require('../lib/models/recipe');
+const Log = require('../lib/models/log');
 
 describe('recipe-lab routes', () => {
   beforeEach(() => {
@@ -57,9 +58,37 @@ describe('recipe-lab routes', () => {
       });
   });
   //NEEDS GET BY ID
+
+  it('finds a recipe with all associated logs by id via GET', async() => {
+    await Promise.all([
+      { recipeId: 'cookies', dateOfEvent: 'Jan 3 2021', notes: 'Great recipe. Would make again.', rating: 8 },
+      { recipeId: 'morecookies', dateOfEvent: 'Jan 23 2021', notes: 'Nice recipe. Would make again.', rating: 7 }
+    ].map(log => Log.insert(log)));
+   
+
+    const recipe = await Recipe.insert({
+      name: 'cookies',
+      directions: [
+        'preheat oven to 375',
+        'mix ingredients',
+        'put dough on cookie sheet',
+        'bake for 10 minutes'
+      ]
+    });
+
+    const response = await request(app)
+      .get(`/api/v1/recipes/${recipe.id}`);
+    
+    // console.log(response.body)
+    expect(response.body).toEqual({
+      ...recipe,
+      logs: ['Garageband', 'VScode']
+    });
+  });
+
+
   it('gets a recipe by id via GET', async() => {
     const recipe = await Recipe.insert({
-      id: '1',
       name: 'cookies',
       directions: [
         'preheat oven to 375',
@@ -69,7 +98,7 @@ describe('recipe-lab routes', () => {
       ]
     });
     const response = await request(app)
-      .get(`/api/v1/recipes/${recipe.id}`);
+      .get(`recipes/${recipe.id}`);
 
     expect(response.body).toEqual(recipe);
   });
