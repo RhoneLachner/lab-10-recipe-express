@@ -40,7 +40,7 @@ describe('recipe-lab log routes', () => {
     const logs = await Promise.all([
       { recipeId: 'cookies', dateOfEvent: 'Jan 3 2021', notes: 'Great recipe. Would make again.', rating: 8 },
       { recipeId: 'morecookies', dateOfEvent: 'Jan 23 2021', notes: 'Nice recipe. Would make again.', rating: 7 }
-    ].map(log => log.insert(log)));
+    ].map(log => Log.insert(log)));
   
     return request(app)
       .get('/api/v1/logs')
