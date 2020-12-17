@@ -57,8 +57,7 @@ describe('recipe-lab routes', () => {
         });
       });
   });
-  //NEEDS GET BY ID
-
+  //GET BY ID
   it('gets a recipe by id via GET', async() => {
     const recipe = await Recipe.insert({
       name: 'cookies',
@@ -75,6 +74,26 @@ describe('recipe-lab routes', () => {
     expect(response.body).toEqual(recipe);
   });
 
+  // //GET BY JOIN ID
+  // it('gets a recipe and associated recipes by id via GET', async() => {
+  //   const recipes = await Promise.all(
+  //     [{ name: 'cookies',
+  //       directions: [
+  //         'preheat oven to 375',
+  //         'mix ingredients',
+  //         'put dough on cookie sheet',
+  //         'bake for 10 minutes'
+  //       ] },
+  //     {
+  //       name: 'OTHERcookies',
+  //       directions: [
+  //         'preheat oven toOTHER 375',
+  //         'mix OTHERingredients',
+  //         'put OTHERdough on cookie sheet',
+  //         'bake OTHERfor 10 minutes'
+  //       ] }
+  //     ].map(recipe => Recipe.insert(recipe))
+  //   );
   //PUT TEST
   it('updates a recipe by id', async() => {
     const recipe = await Recipe.insert({

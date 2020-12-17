@@ -63,45 +63,20 @@ describe('recipe-lab log routes', () => {
         });
       });
   });
+  
   //GET BY ID
-  it('gets a log and associated recipes by id via GET', async() => {
-    const recipes = await Promise.all(
-      [{ name: 'cookies',
-        directions: [
-          'preheat oven to 375',
-          'mix ingredients',
-          'put dough on cookie sheet',
-          'bake for 10 minutes'
-        ] },
-      {
-        name: 'OTHERcookies',
-        directions: [
-          'preheat oven toOTHER 375',
-          'mix OTHERingredients',
-          'put OTHERdough on cookie sheet',
-          'bake OTHERfor 10 minutes'
-        ] }
-      ].map(recipe => Recipe.insert(recipe))
+  it('gets a log by id via GET', async() => {
+    const log = await Log.insert(
+      { recipeId: `${recipe.id}`, dateOfEvent: 'Jan 3 2021', notes: 'Great recipe. Would make again.', rating: 8 },
+
     );
-
-    const log = await Log.insert({
-      recipeId: recipe.id,
-      dateOfEvent: 'Jan 3 2021',
-      notes: 'Great recipe. Would make again.',
-      rating: 8
-    });
-
     const response = await request(app)
       .get(`/api/v1/logs/${log.id}`);
-  
-    expect(response.text).toEqual({
-      ...log,
-      recipes: expect.arrayContaining(recipes)
-    });
 
+    expect(response.body).toEqual(log);
   });
   //PUT TEST
-  it('updates a log by id', async() => {
+  it('updates a log by id with PUT', async() => {
     const log = await Log.insert({
       recipeId: `${recipe.id}`,
       dateOfEvent: 'Jan 3 2021',
@@ -109,32 +84,30 @@ describe('recipe-lab log routes', () => {
       rating: 8
     });
   
-    return request(app)
+    const response = await request(app)
       .put(`/api/v1/logs/${log.id}`)
       .send({
         recipeId: `${recipe.id}`,
         dateOfEvent: 'UPDATED Jan 3 2021',
         notes: 'UPDATED Great recipe. Would make again.',
         rating: 8
-      })
-      .then(res => {
-        expect(res.body).toEqual({
-          id: expect.any(String),
-          recipeId: `${recipe.id}`,
-          dateOfEvent: 'UPDATED Jan 3 2021',
-          notes: 'UPDATED Great recipe. Would make again.',
-          rating: 8
-        });
       });
+      
+    expect(response.body).toEqual({
+      ...log,
+      dateOfEvent: 'UPDATED Jan 3 2021',
+      notes: 'UPDATED Great recipe. Would make again.',
+      rating: '8'        
+    });
   });
-  //NEEDS DELETE TEST
+  //DELETE TEST
   it('deletes log from table by ID with PUT', async() => {
     const log = await Log.insert({       
       id: expect.any(String),
       recipeId: `${recipe.id}`,
       dateOfEvent: 'UPDATED Jan 3 2021',
       notes: 'UPDATED Great recipe. Would make again.',
-      rating: 8
+      rating: '8'
     });
     const response = await request(app)
       .delete(`/api/v1/logs/${log.id}`);
