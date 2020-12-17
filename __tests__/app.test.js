@@ -57,25 +57,9 @@ describe('recipe-lab routes', () => {
         });
       });
   });
-  //GET BY ID
-  it('gets a recipe by id via GET', async() => {
-    const recipe = await Recipe.insert({
-      name: 'cookies',
-      directions: [
-        'preheat oven to 375',
-        'mix ingredients',
-        'put dough on cookie sheet',
-        'bake for 10 minutes'
-      ]
-    });
-    const response = await request(app)
-      .get(`/api/v1/recipes/${recipe.id}`);
-
-    expect(response.body).toEqual(recipe);
-  });
-
+  
   //GET BY JOIN ID
-  it('gets a recipe and associated recipes by id via GET', async() => {
+  it('gets a recipe and associated logs by id via GET', async() => {
     
     const recipe = await Recipe.insert({
       name: 'cookies',

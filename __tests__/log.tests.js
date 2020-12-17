@@ -68,7 +68,6 @@ describe('recipe-lab log routes', () => {
   it('gets a log by id via GET', async() => {
     const log = await Log.insert(
       { recipeId: `${recipe.id}`, dateOfEvent: 'Jan 3 2021', notes: 'Great recipe. Would make again.', rating: 8 },
-
     );
     const response = await request(app)
       .get(`/api/v1/logs/${log.id}`);
@@ -81,9 +80,9 @@ describe('recipe-lab log routes', () => {
       recipeId: `${recipe.id}`,
       dateOfEvent: 'Jan 3 2021',
       notes: 'Great recipe. Would make again.',
-      rating: 8
+      rating: 8        
     });
-  
+ 
     const response = await request(app)
       .put(`/api/v1/logs/${log.id}`)
       .send({
@@ -92,12 +91,12 @@ describe('recipe-lab log routes', () => {
         notes: 'UPDATED Great recipe. Would make again.',
         rating: 8
       });
-      
+     
     expect(response.body).toEqual({
       ...log,
       dateOfEvent: 'UPDATED Jan 3 2021',
       notes: 'UPDATED Great recipe. Would make again.',
-      rating: '8'        
+      rating: 8        
     });
   });
   //DELETE TEST
