@@ -74,26 +74,33 @@ describe('recipe-lab routes', () => {
     expect(response.body).toEqual(recipe);
   });
 
-  // //GET BY JOIN ID
-  // it('gets a recipe and associated recipes by id via GET', async() => {
-  //   const recipes = await Promise.all(
-  //     [{ name: 'cookies',
-  //       directions: [
-  //         'preheat oven to 375',
-  //         'mix ingredients',
-  //         'put dough on cookie sheet',
-  //         'bake for 10 minutes'
-  //       ] },
-  //     {
-  //       name: 'OTHERcookies',
-  //       directions: [
-  //         'preheat oven toOTHER 375',
-  //         'mix OTHERingredients',
-  //         'put OTHERdough on cookie sheet',
-  //         'bake OTHERfor 10 minutes'
-  //       ] }
-  //     ].map(recipe => Recipe.insert(recipe))
-  //   );
+  //GET BY JOIN ID
+  it('gets a recipe and associated recipes by id via GET', async() => {
+    
+    const recipe = await Recipe.insert({
+      name: 'cookies',
+      directions: [
+        'preheat oven to 375',
+        'mix ingredients',
+        'put dough on cookie sheet',
+        'bake for 10 minutes'
+      ]
+    });
+
+    const logs = await Promise.all([
+      { recipeId: `${recipe.id}`, dateOfEvent: 'Jan 3 2021', notes: 'Great recipe. Would make again.', rating: 8 },
+      { recipeId: `${recipe.id}`, dateOfEvent: 'Jan 23 2021', notes: 'Nice recipe. Would make again.', rating: 7 }
+    ].map(log => Log.insert(log)));    
+
+    const res = await request(app)
+      .get(`/api/v1/recipes/${recipe.id}`);
+      
+    expect(res.body).toEqual({
+      ...recipe,
+      logs: expect.arrayContaining(logs)
+    });
+  });
+
   //PUT TEST
   it('updates a recipe by id', async() => {
     const recipe = await Recipe.insert({
